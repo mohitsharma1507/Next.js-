@@ -1,5 +1,10 @@
+"use client";
+
 import ContactAction from "./contact.action";
 
+// const ContactActions = (formData) => {
+//   const { fullName, email, message } = Object.fromEntries(formData.entries());
+// };
 const Contacts = async () => {
   return (
     <div className="min-h-screen bg-[rgb(14,14,14)] text-white">
