@@ -1,11 +1,14 @@
 "use client";
 
+import { useActionState } from "react";
 import ContactAction from "./contact.action";
 
 // const ContactActions = (formData) => {
 //   const { fullName, email, message } = Object.fromEntries(formData.entries());
 // };
-const Contacts = async () => {
+
+const Contacts = () => {
+  const [state, formAction, isPending] = useActionState(ContactAction, null);
   return (
     <div className="min-h-screen bg-[rgb(14,14,14)] text-white">
       <div className="container mx-auto px-4 py-16">
@@ -14,7 +17,7 @@ const Contacts = async () => {
             Get In Touch
           </h1>
           <div className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-8 border border-gray-800">
-            <form className="space-y-6" action={ContactAction}>
+            <form className="space-y-6" action={formAction}>
               <div>
                 <label
                   htmlFor="fullName"
@@ -65,13 +68,27 @@ const Contacts = async () => {
               </div>
 
               <button
+                type="submit"
+                disabled={isPending}
                 className="w-full bg-pink-600 hover:bg-pink-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white
               font-medium py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
               >
-                <span>Send Message</span>
+                {isPending ? <span>Loading...</span> : <span>SendMessage</span>}
               </button>
             </form>
           </div>
+
+          <section>
+            {state && (
+              <p
+                className={`p-4 mt-5 text-center ${
+                  state.success ? "bg-green-600" : "bg-red-500"
+                }`}
+              >
+                {state.message}
+              </p>
+            )}
+          </section>
         </div>
       </div>
     </div>
