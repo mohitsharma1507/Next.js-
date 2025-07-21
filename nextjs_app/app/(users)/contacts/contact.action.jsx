@@ -1,15 +1,15 @@
 "use server";
 import { db } from "@/config/db";
 import { redirect } from "next/navigation";
-const ContactAction = async (perviousState, formData) => {
+const ContactAction = async (fullName, email, message) => {
   try {
-    const { fullName, email, message } = Object.fromEntries(formData.entries());
+    // const { fullName, email, message } = Object.fromEntries(formData.entries());
     await db.execute(
       `insert into contactForm (full_name,email,message) values (?,?,?)`,
       [fullName, email, message]
     );
-    //return { success: true, message: "form submitted successfully" };
-    redirect("/");
+    return { success: true, message: "form submitted successfully" };
+    // redirect("/");
   } catch (err) {
     if (err.message === "NEXT_REDIRECT") throw err;
     //console.log("server action:", err);

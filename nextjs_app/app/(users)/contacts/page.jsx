@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState, useTransition } from "react";
 import ContactAction from "./contact.action";
 
 // const ContactActions = (formData) => {
@@ -8,7 +8,18 @@ import ContactAction from "./contact.action";
 // };
 
 const Contacts = () => {
-  const [state, formAction, isPending] = useActionState(ContactAction, null);
+  // const [state, formAction, isPending] = useActionState(ContactAction, null);
+  const [isPending, startTransition] = useTransition();
+  const [contactFormResponse, setcontactFormResponse] = useState(null);
+  const handleContactSubmit = (formData) => {
+    const { fullName, email, message } = Object.fromEntries(formData);
+
+    startTransition(async () => {
+      const res = await ContactAction(fullName, email, message);
+      setcontactFormResponse(res);
+    });
+  };
+
   return (
     <div className="min-h-screen bg-[rgb(14,14,14)] text-white">
       <div className="container mx-auto px-4 py-16">
@@ -17,7 +28,7 @@ const Contacts = () => {
             Get In Touch
           </h1>
           <div className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-8 border border-gray-800">
-            <form className="space-y-6" action={formAction}>
+            <form className="space-y-6" action={handleContactSubmit}>
               <div>
                 <label
                   htmlFor="fullName"
@@ -79,13 +90,13 @@ const Contacts = () => {
           </div>
 
           <section>
-            {state && (
+            {contactFormResponse && (
               <p
                 className={`p-4 mt-5 text-center ${
-                  state.success ? "bg-green-600" : "bg-red-500"
+                  contactFormResponse.success ? "bg-green-600" : "bg-red-500"
                 }`}
               >
-                {state.message}
+                {contactFormResponse.message}
               </p>
             )}
           </section>
